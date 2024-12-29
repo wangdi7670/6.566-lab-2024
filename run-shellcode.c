@@ -28,6 +28,7 @@ main(int ac, char **av)
   if (fstat(fd, &st) < 0)
     perror("fstat");
 
+  // the reason of using memaligin is that ensure mprotect succeed.
   buf = memalign(4096, st.st_size);
   if (!buf)
     perror("malloc");

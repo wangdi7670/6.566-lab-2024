@@ -24,3 +24,4 @@ __pycache__
 /.gdb_history
 /package.json
 /package-lock.json
+temp
