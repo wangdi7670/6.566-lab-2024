@@ -12,6 +12,9 @@ endif
 SHELLCODE := $(patsubst %.S,%.bin,$(wildcard shellcode*.S))
 PROGS     += $(SHELLCODE)
 
+UNLINKCODE := $(patsubst %.S,%.bin,$(wildcard unlinkcode*.S))
+PROGS     += $(UNLINKCODE)
+
 all: $(PROGS)
 .PHONY: all
 
