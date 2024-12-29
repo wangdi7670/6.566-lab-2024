@@ -1,6 +1,6 @@
 #include <sys/syscall.h>
 
-#define STRING "/home/student/lab/grades.txt"
+#define STRING "/home/student/grades.txt"
 #define STRLEN 28
 
 # unlink function signature: unlink(const char *pathname)

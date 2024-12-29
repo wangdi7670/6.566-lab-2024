@@ -73,6 +73,7 @@ const char *http_request_line(int fd, char *reqpath, char *env, size_t *env_len)
         return "Socket IO error";
 
     /* Parse request like "GET /foo.html HTTP/1.0" */
+    /*                     buf sp1       sp2 */
     sp1 = strchr(buf, ' ');
     if (!sp1)
         return "Cannot parse HTTP request (1)";
@@ -141,13 +142,13 @@ const char *http_parse_line(char *buf, char *envvar, char *value)
     }
 
     /* Decode URL escape sequences in the value */
-    url_decode(value, sp);
+    url_decode(value, sp);               /* attack by exploit-4.py */
 
     /* Store header in env. variable for application code */
     /* Some special headers don't use the HTTP_ prefix. */
     if (strcmp(buf, "CONTENT_TYPE") != 0 &&
         strcmp(buf, "CONTENT_LENGTH") != 0) {
-        sprintf(envvar, "HTTP_%s", buf);
+        sprintf(envvar, "HTTP_%s", buf);  /* attack by exploit-2.py */ 
         setenv(envvar, value, 1);
     } else {
         sprintf(envvar, "%s", buf);
@@ -160,8 +161,8 @@ const char *http_request_headers(int fd)
 {
     static char buf[8192];      /* static variables are not on the stack */
     const char *r;
-    char value[512];
-    char envvar[512];
+    char value[512];   /* attack by exploit-4.py */
+    char envvar[512];  /* attack by exploit-2.py */
 
     /* For lab 2: don't remove this line. */
     touch("http_request_headers");
@@ -217,11 +218,13 @@ void split_path(char *pn)
          */
         int r = stat(pn, &st);
         if (r < 0) {
-            if (errno != ENOTDIR && errno != ENOENT)
+            if (errno != ENOTDIR && errno != ENOENT) {
                 break;
+            }
         } else {
-            if (S_ISREG(st.st_mode))
+            if (S_ISREG(st.st_mode)) {
                 break;
+            }
         }
 
         /* Set the last '/' in pn to a null, and see if that helps.
